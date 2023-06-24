@@ -44,8 +44,7 @@ def get_exhcange_store(event_id):
 def index():
     conn = get_db_connection()
     store_items = get_exhcange_store(16)
-    form = create_bonus_form(store_items)
-    return render_template("index.html", form=form, store_items=store_items)
+    return render_template("index.html", store_items=store_items)
 
 
 @app.route("/data", methods = ["POST", "GET"])
