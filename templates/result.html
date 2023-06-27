@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    {% if event_id != None %}
+    <form action="" method = "POST">
+        <div class="row">
+            {% for key, value in store_items.items() %}
+            <div class="column">
+                <table>
+                    <th colspan="2" style="text-align:center;">{{ key }}</th>
+                    {% for store_item in value %}
+                    <tr>
+                        <td>{{ store_item.Name }}</td>
+                        <td><input type="number" name = {{ store_item.Name }} value={{ store_item.start_qty }} min="0"></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="row">
+            <div class="column">
+                <table>
+                    {% for key in store_items.keys() %}
+                    <tr>
+                        <td>{{ key }}</td>
+                        <td><input type="number" name={{ key ~ 'reward' }} value=0 step="0.1" min="0"></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="column">
+                <table>
+                    {% if result != None %}
+                        {% for key, val in result.items() %}
+                        <tr>
+                            <td>{{ key }}</td>
+                            <td>{{ val }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+        <p><input type="submit" value="Submit"></p>
+    </form>
+{% endif %}
+{% endblock %}

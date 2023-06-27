@@ -23,31 +23,32 @@ def get_store_items(event_id):
 
     return store_items
 
+def get_reward(event_id):
+    rewards = {}
+    items = conn.execute(
+        "SELECT item_ID, item_name FROM Items "
+        "WHERE event_ID = %i" % event_id
+    )
+    items = items.fetchall()
+    for item_id, item_name in items:
+        reward = conn.execute(
+            "SELECT reward FROM Missions "
+            "WHERE item_ID = %i" % item_id
+        )
+        reward = [i["reward"] for i in reward]
+        rewards[item_name] = reward
+    return rewards
 
 
-class ItemForm2(Form):
-    item1 = FloatField("豆袋", validators=[validators.DataRequired()])
+def get_missions(event_id):
+    missions = conn.execute(
+        "SELECT DISTINCT name FROM Missions "
+        "WHERE event_ID = %i" % event_id
+    )
+    missions = [i['name'] for i in missions]
+
+    return missions
 
 
-class ItemForm(FlaskForm):
-    def __init__(self, store_items):
-        self.entries = []
-        for key in store_items.keys():
-            self.entries.append(FloatField(str(key), validators=[validators.DataRequired()]))
-
-
-def create(store_items):
-    class ItemForm3(Form):
-        ...
-
-    for i, key in enumerate(store_items.keys()):
-        setattr(ItemForm3, "item" + str(i), FloatField(str(key), validators=[validators.DataRequired()]))
-
-    return ItemForm3
-
-
-test = create(get_store_items(16))
-#print(getattr(test, "item1"))
-
-test2 = ItemForm2()
-print(dir(test2.item1))
+test = get_missions(16)
+print(test)
