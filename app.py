@@ -73,9 +73,9 @@ def get_reward(event_id):
     return rewards
 
 
-@app.route("/")
+@app.route("/", methods=["POST", "GET"])
 def index():
-   conn = get_db_connection()
+    conn = get_db_connection()
     events = conn.execute(
         "SELECT DISTINCT Events.event_ID, event_name FROM Events "
         "INNER JOIN Missions "
@@ -83,12 +83,14 @@ def index():
     )
     events = events.fetchall()
     events = {event["event_ID"]: event["event_name"] for event in events}
-    return
+    return render_template("index.html", events=events)
+
 
 @app.route("/result", methods=['POST', 'GET'])
 def result():
-    store_items = get_exhcange_store(16)
-    missions = get_missions(16)
+    event_id = int(request.args.get('event_id'))
+    store_items = get_exhcange_store(event_id)
+    missions = get_missions(event_id)
 
     if request.method == 'POST':
         form = request.form
@@ -98,12 +100,13 @@ def result():
             for i in val:
                 temp += i['Cost'] * int(form.get(i['Name']))
             need[key] = temp
-        rewards = get_reward(16)
+        rewards = get_reward(event_id)
         for key, val in rewards.items():
             rewards[key] = [i * round(1 + float(form.get(key+'reward'))) for i in val]
         result = count_minimum(rewards, need, missions)
     else:
         result = None
+
     return render_template("result.html", store_items=store_items, result=result)
 
 

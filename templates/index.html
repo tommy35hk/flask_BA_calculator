@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
-<form action="", method="POST">
-    <select name="event_name" method="POST" action="/result">
+<form action="{{url_for('result')}}", method="GET">
+    <select name="event_id" method="GET" action="/result">
         {% for event_id, name in events.items() %}
         <option value="{{ event_id }}" SELECTED>{{ name }}</option>>
         {% endfor %}
